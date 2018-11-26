@@ -1,5 +1,5 @@
 项目介绍
-基于Vue2.0+Vue-router2+Axios+ES6+SCSS+Webpack 仿饿了么 app
+基于Vue2.0+Vue-router2+vuex+Axios+ES6+Webpack 仿饿了么 app
 
 前言
 此项目为学习巩固vue的完整项目demo
