@@ -1,30 +1,14 @@
-# shop-project
+项目介绍
+基于Vue2.0+Vue-router2+Axios+ES6+SCSS+Webpack 仿饿了么 app
 
-> A Vue.js project
+前言
+此项目为学习巩固vue的完整项目demo
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+主要技术栈
+.基于vue@2.0
+.使用vue-cli@2.0搭建项目框架
+.使用vue-router@2.1进行页面路由切换
+.使用ajax进行http请求数据
+.mock模拟假数据存储在本地
+.使用stylus编写样式
+.ES6 
