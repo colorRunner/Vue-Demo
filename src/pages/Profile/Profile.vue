@@ -2,7 +2,7 @@
   <section class="profile">
     <HeaderTop class="header" title="我的"></HeaderTop>
     <section class="profile-number">
-      <router-link to="/login" class="profile-link">
+      <div class="profile-link">
         <div class="profile_image">
           <i class="iconfont icon-person"></i>
         </div>
@@ -18,7 +18,7 @@
         <span class="arrow">
               <i class="iconfont icon-jiantou1"></i>
             </span>
-      </router-link>
+      </div>
     </section>
     <section class="profile_info_data border-1px">
       <ul class="info_data_list">

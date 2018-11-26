@@ -17,5 +17,6 @@
 
   Mock.mock('/shops',{code:0,data: data.shops})
 
+
   //export default ??? 不需要向外暴露任何数据，只需要保证能执行即可
 

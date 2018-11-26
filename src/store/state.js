@@ -7,5 +7,9 @@ export default {
 
   shops: [], //商家数组
 
+  goods: [],//商品列表
+  ratings: [],//商品评价
+  info: {},//商家信息
+
   userInfo: {},//用户信息
 }

@@ -1,12 +1,18 @@
 import {
   RECEIVE_ADDRESS,
   RECEIVE_CATEGORYS,
-  RECEIVE_SHOPS
+  RECEIVE_SHOPS,
+  RECEIVE_INFO,
+  RECEIVE_RATINGS,
+  RECEIVE_GOODS
 } from './mutation-types'
 import {
   reqAddress,
   reqFoodCategorys,
-  reqShops
+  reqShops,
+  reqShopInfo,
+  reqShopRatings,
+  reqShopGoods
 } from '../api'
 
 export default {
@@ -37,5 +43,31 @@ export default {
 
       commit(RECEIVE_SHOPS,{shops})
     }
+  },
+
+  async getShopInfo({commit}) {
+    const result = await reqShopInfo()
+    if(result.code === 0){
+      const info = result.data
+      commit(RECEIVE_INFO,{info})
+    }
+  },
+  //获取商家商品列表
+  async getShopGoods({commit}) {
+    const result = await reqShopGoods()
+    if(result.code === 0){
+      const goods = result.data
+      commit(RECEIVE_GOODS,{goods})
+    }
+  },
+  //获取商家评价列表
+  async getShopRatings({commit}) {
+    const result = await reqShopRatings()
+    if(result.code === 0){
+      const ratings = result.data
+      commit(RECEIVE_RATINGS,{ratings})
+    }
   }
+
+
 }

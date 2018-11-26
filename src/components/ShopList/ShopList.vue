@@ -1,7 +1,7 @@
 <template>
   <div class="shop_container">
     <ul class="shop_list">
-      <li class="shop_li border-1px" v-for="(shop, index) in shops" :key="index">
+      <li class="shop_li border-1px" v-for="(shop, index) in shops" :key="index" @click.stop="$router.push('/shop')">
         <a>
           <div class="shop_left">
             <img class="shop_img" src="./images/shop/1.jpg">
@@ -15,6 +15,7 @@
             </section>
             <section class="shop_rating_order">
               <section class="shop_rating_order_left">
+
                 <Star :score="shop.rating" :size="24"/>
                 <div class="rating_section">
                   {{shop.rating}}
