@@ -12,4 +12,6 @@ export default {
   info: {},//商家信息
 
   userInfo: {},//用户信息
+
+  cartFoods: [],//购物车中食物的列表
 }

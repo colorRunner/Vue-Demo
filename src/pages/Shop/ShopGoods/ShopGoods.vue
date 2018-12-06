@@ -1,68 +1,96 @@
 <template>
-    <div>
-      <div class="goods">
-        <div class="menu-wrapper" ref="menuWrapper">
-          <ul>
-            <li class="menu-item" v-for="(good, index) in goods" :key="index">
-              <span class="text bottom-border-1px">
-                <img class="icon" :src="good.icon" v-if="good.icon">
+  <div>
+    <div class="goods">
+      <div class="menu-wrapper">
+        <ul>
+          <li class="menu-item" v-for="(good,index) in goods" :key="index" :class="{current:currentIndex === index}"
+          @click="clickMenuItem(index)">
+            <span class="text bottom-border-1px">
+              <img class="icon"
+                   :src="good.icon" v-if="good.icon">
               {{good.name}}
-              </span>
-            </li>
-
-          </ul>
-        </div>
-        <div class="foods-wrapper" ref="foodsWrapper">
-          <ul>
-            <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
-              <h1 class="title">{{good.name}}</h1>
-              <ul>
-                <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index">
-                  <div class="icon">
-                    <img width="57" height="57"
-                         src="http://fuss10.elemecdn.com/8/a6/453f65f16b1391942af11511b7a90jpeg.jpeg?imageVi
-ew2/1/w/114/h/114">
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="foods-wrapper">
+        <ul ref="foodeUI">
+          <li class="food-list-hook" v-for="(good, index) in goods" :key="index">
+            <h1 class="title">{{good.name}}</h1>
+            <ul>
+              <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index"
+              @click="showFood(food)">
+                <div class="icon" >
+                  <img width="57" height="57"
+                       :src="food.icon">
+                </div>
+                <div class="content">
+                  <h2 class="name">{{food.name}}</h2>
+                  <p class="desc">{{food.description}}</p>
+                  <div class="extra">
+                    <span class="count">月售 {{food.sellCount}} 份</span>
+                    <span>好评率 {{food.rating}}%</span>
                   </div>
-                  <div class="content">
-                    <h2 class="name">{{food.name}}</h2>
-                    <p class="desc">{{food.description}}</p>
-                    <div class="extra">
-                      <span class="count">月售 {{food.sellCount}} 份</span>
-                      <span>好评率 {{food.rating}}%</span></div>
-                    <div class="price">
-                      <span class="now">￥{{food.price}}</span>
-                    </div>
-                    <div class="cartcontrol-wrapper">
-                      <CartControl/>
-                    </div>
+                  <div class="price">
+                    <span class="now">￥{{food.price}}</span>
+                    <span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
-                </li>
+                  <div class="cartcontrol-wrapper">
+                    <CartControl :food="food"/>
+                  </div>
+                </div>
+              </li>
 
-              </ul>
-            </li>
-
-          </ul>
-        </div>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
+    <Food :food="food" ref="food"/>
+    <ShopCart/>
+  </div>
 </template>
 
 <script>
     import BScroll from 'better-scroll'
     import {mapState} from 'vuex'
-    import CartControl from '../../../components/CartControl/CartControl'
+    import CartControl from '../../../components/CartControl/CartControl.vue'
+    import Food from '../../../components/Food/Food.vue'
+    import ShopCart from '../../../components/ShopCart/ShopCart.vue'
 
     export default {
+      data (){
+        return {
+          scrollY:0,
+          tops: [],
+          food: {}
+
+        }
+      },
       mounted() {
         this.$store.dispatch('getShopGoods', () => {
           this.$nextTick(() => {//列表数据更新显示后
             //列表显示之后创建
             this._initScroll()
+            this._initTop()
           })
         })
       },
       computed: {
-        ...mapState(['goods'])
+        ...mapState(['goods']),
+
+        //计算当前分类的下标
+        currentIndex() {
+          //初始相关数据
+          //得到当前数据
+          const {scrollY, tops} = this
+          //根据条件计算产生一个结果
+          const index = tops.findIndex((top,index) => {
+            return scrollY >= top && scrollY < tops[index+1]
+          })
+          //返回结果
+          return index
+        }
       },
       methods: {
         _initScroll(){
@@ -73,10 +101,52 @@ ew2/1/w/114/h/114">
             probeType: 2,  //2因为惯性活动不会触发 ,3惯性依旧触发
             click: true
           })
+
+          //给右侧列表绑定scroll监听
+          this.foodsScroll.on('scroll',({x,y}) => {
+            this.scrollY = Math.abs(y)
+          })
+
+          //给右侧列表绑定scroll监听
+          this.foodsScroll.on('scrollEnd',({x,y}) => {
+            this.scrollY = Math.abs(y)
+          })
+        },
+        _initTop() {
+          //初始化数据
+          const tops = []
+          let top = 0
+          tops.push(top)
+          //找到所有分类的li
+          const lis = this.$refs.foodeUI.getElementsByClassName('food-list-hook')
+          Array.prototype.slice.call(lis).forEach(li => {
+            top += li.clientHeight
+            tops.push(top)
+          })
+          //更新数据
+          this.tops = tops
+          console.log(tops)
+        },
+
+        clickMenuItem(index) {
+          //得到目标位置scrollY
+          const scrollY = this.tops[index]
+          //立即更新scrollY(让点击的分类项成为当前分类)
+          this.scrollY = scrollY
+          //平滑滑动右侧列表
+          this.foodsScroll.scrollTo(0,-scrollY,300)
+        },
+        showFood(food) {
+          //设置food
+          this.food = food
+          //显示food组件（在父组件中调用子组件对象的方法）
+          this.$refs.food.toggleShow()
         }
       },
       components: {
-        CartControl
+        CartControl,
+        Food,
+        ShopCart
       }
     }
 </script>
